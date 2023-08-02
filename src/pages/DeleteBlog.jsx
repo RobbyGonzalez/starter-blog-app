@@ -1,36 +1,43 @@
-import React,{useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const DeleteBlog = () => {
+const DeleteBlog = ({ blogs }) => {
 
   const [id, setID] = useState(0)
   const navigate = useNavigate()
+  const [disabled, setDisabled] = useState(true);
 
-  function handleID(e){
+  useEffect(() => {
+    const hasMatchingID = blogs.some((blog) => blog.id === parseInt(id));
+    setDisabled(!hasMatchingID);
+  }, [blogs, id])
+
+  function handleID(e) {
     setID(e.target.value)
+
   }
 
-  function handleOnSubmit(e){
+  function handleOnSubmit(e) {
     e.preventDefault()
     navigate(`/blogs/delete/${id}`)
-    
   }
+
   return (
     <>
-    
-<form onSubmit={handleOnSubmit}>
+
+      <form onSubmit={handleOnSubmit}>
 
 
-<input 
-type="text" 
-onChange={handleID}
-placeholder='Please add ID'
-/>
+        <input
+          type="text"
+          onChange={handleID}
+          placeholder='Please add ID'
+        />
 
-<button>Delete Post</button>
+        <button disabled={disabled}>Delete Post</button>
 
-</form>
-    
+      </form>
+
     </>
   )
 }
